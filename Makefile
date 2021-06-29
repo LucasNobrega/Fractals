@@ -1,5 +1,5 @@
 #OBJS specifies which files to compile as part of the project
-OBJS = Fractal.cpp Bitmap.cpp Mandelbrot.cpp ZoomList.cpp FractalCreator.cpp RGB.cpp
+OBJS = main.cpp Bitmap.cpp Mandelbrot.cpp ZoomList.cpp FractalCreator.cpp RGB.cpp
 
 #CC specifies which compiler we're using
 CC = g++
