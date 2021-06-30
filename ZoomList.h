@@ -3,10 +3,12 @@
 
 #include <utility>
 #include <vector>
+
 #include "Zoom.h"
 
 namespace fractal {
 
+// Many Zooms can be applied to the picture so an area has higher resolution.
 class ZoomList {
    private:
     double _xCenter{0};

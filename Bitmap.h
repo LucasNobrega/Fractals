@@ -1,9 +1,10 @@
 #ifndef BITMAP_H_
 #define BITMAP_H_
 
-#include <string>
 #include <cstdint>
 #include <memory>
+#include <string>
+
 #include "BitmapFileHeader.h"
 #include "BitmapInfoHeader.h"
 using namespace std;
@@ -17,9 +18,11 @@ class Bitmap {
     unique_ptr<uint8_t[]> _pPixels{nullptr};
 
    public:
+    // Creator and Destroyer
     Bitmap(int width, int height);
     virtual ~Bitmap();
 
+    // Create the bitmap
     void setPixel(int x, int y, uint8_t red, uint8_t green, uint8_t blue);
     bool write(string filename);
 };

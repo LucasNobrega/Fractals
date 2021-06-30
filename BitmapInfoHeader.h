@@ -8,6 +8,7 @@ using namespace std;
 
 namespace fractal {
 
+// Device-Independent Bitmap Hedaer (fixed size: 40 bytes)
 struct BitmapInfoHeader {
     int32_t headerSize{40};
     int32_t width;   // Width of the bitmap

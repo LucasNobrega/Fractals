@@ -7,12 +7,14 @@ namespace fractal {
 
 class Mandelbrot {
    public:
-    static const int MAX_ITERATIONS = 1000;
+    static const int MAX_ITERATIONS = 1000;  // Max of iterations to test that pixel.
 
    public:
+    // Creator and destroyer
     Mandelbrot();
     virtual ~Mandelbrot();
 
+    // Calculate # of iterations for a given pixel.
     static int getIterations(double x, double y);
 };
 

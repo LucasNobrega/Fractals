@@ -3,6 +3,8 @@
 
 namespace fractal {
 
+// Each pixel will be represented by 3 values. One for each
+// component of the RGB spectrum.
 struct RGB {
     double r;
     double g;

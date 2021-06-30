@@ -4,10 +4,12 @@
 #include <cstdint>
 using namespace std;
 
-#pragma pack(push, 2)  // So it doesn't do any padding, nor memory optimization.
+#pragma pack(push, 2)  // So it doesn't do any padding, nor
+                       // memory optimization.
 
 namespace fractal {
 
+// Bitmap file Header (fixed size: 14 bytes)
 struct BitmapFileHeader {
     char header[2] = {'B', 'M'};
     int32_t fileSize;
