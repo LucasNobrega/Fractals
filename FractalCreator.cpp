@@ -91,8 +91,7 @@ void FractalCreator::calculateIterationsJulia() {
             pair<double, double> coords = _zoomList.doZoom(x, y);
 
             // Get iteration for given pixel and store in buffer (_fractal)
-            int iterations = Julia::getIterations(coords.first, coords.second, _startingC.first,
-                                                  _startingC.second);
+            int iterations = Julia::getIterations(coords.first, coords.second, _startingC.first, _startingC.second);
             _fractal[y * _width + x] = iterations;
 
             // Update histogram.
@@ -186,5 +185,135 @@ int FractalCreator::getRange(int iterations) const {
 }
 
 FractalCreator::~FractalCreator(){};
+
+int FractalCreator::getType() { return _type; }
+
+void FractalCreator::colorRangeFile(FractalCreator *fractalCreator1, string filename) {
+    // Open file
+    fstream colorFile;
+    colorFile.open(filename, ios::in);
+
+    // Check if it was properly opened
+    if (!colorFile.is_open()) {
+        cout << "Could not open color file." << endl;
+    }
+
+    string line = "";
+    string stringRange = "";
+    string stringRed = "";
+    string stringGreen = "";
+    string stringBlue = "";
+
+    while (getline(colorFile, line)) {
+        stringstream linestream(line);
+        getline(linestream, stringRange, ' ');
+        getline(linestream, stringRed, ' ');
+        getline(linestream, stringGreen, ' ');
+        getline(linestream, stringBlue, ' ');
+        double range = stod(stringRange);
+        double red = stoi(stringRed);
+        double green = stoi(stringGreen);
+        double blue = stoi(stringBlue);
+
+        fractalCreator1->addRange(range, RGB(red, green, blue));
+    }
+
+    colorFile.close();
+}
+
+void FractalCreator::zoomAndPrint(FractalCreator *fractalCreator1, string filename) {
+    // Open file
+    fstream fractalFile;
+    fractalFile.open(filename, ios::in);
+
+    // Check if it was properly opened
+    if (!fractalFile.is_open()) {
+        cout << "Could not open fractal file." << endl;
+    }
+    
+    string line = "";
+    string operation = "";
+
+    // Skips the 1st line (Mandelbrot-set) or the 1st and the 2nd line (Julia-set)
+    if (fractalCreator1->getType() == 1) {
+        getline(fractalFile, line);
+    } else {
+        getline(fractalFile, line);
+        getline(fractalFile, line);
+    }
+
+
+    while (getline(fractalFile, line)) {
+        stringstream linestream(line);
+        getline(linestream, operation, ' ');
+
+        if (operation == "z") {
+            string stringX = "";
+            string stringY = "";
+            string stringScale = "";
+            getline(linestream, stringX, ' ');
+            getline(linestream, stringY, ' ');
+            getline(linestream, stringScale, ' ');
+            int x = stoi(stringX);
+            int y = stoi(stringY);
+            double scale = stod(stringScale);
+
+            //cout << x << ", " << y << ", " << scale << endl;
+            fractalCreator1->addZoom(Zoom(x, y, scale));
+        } else if (operation == "p") {
+            string printName = "";
+            getline(linestream, printName);
+            fractalCreator1->run(printName + ".bmp");
+        }
+    }
+
+    // Close file
+    fractalFile.close();
+}
+
+
+FractalCreator *fractalTypeInterpreter(string filename) {
+    // Open file
+    fstream fractalFile;
+    fractalFile.open(filename, ios::in);
+
+    // Check if it was properly opened
+    if (!fractalFile.is_open()) {
+        cout << "Could not open fractal file." << endl;
+        return nullptr;
+    }
+
+    // Variables used to create the fractal
+    int fractalType = 0;
+    int dimX = 0;
+    int dimY = 0;
+    FractalCreator *pFractalCreator = nullptr;
+
+    // Get fractal type and dimensions
+    fractalFile >> fractalType >> dimX >> dimY;
+
+    // Create specified fractal
+    if (fractalType != 1 && fractalType != 2) {  // Invalid fractal type
+        cout << "Fractal type not supported" << endl;
+        return nullptr;
+
+    } else if (fractalType == 1) {  // Create Mandelbrot-set fractal
+        pFractalCreator = new FractalCreator(dimX, dimY, fractalType);
+
+    } else if (fractalType == 2) {  // Create Julia-set fractal
+        double cReal = 0.0;
+        double cImag = 0.0;
+        fractalFile >> cReal;
+        fractalFile >> cImag;
+        pFractalCreator = new FractalCreator(dimX, dimY, fractalType, pair<double, double>(cReal, cImag));
+    }
+
+    // Close file
+    fractalFile.close();
+
+    // Return pointer to created fractal
+    return pFractalCreator;
+}
+
 
 }  // namespace fractal

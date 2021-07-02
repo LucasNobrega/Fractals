@@ -1,15 +1,16 @@
 #ifndef FRACTALCREATOR_H_
 #define FRACTALCREATOR_H_
 #include <math.h>
-
+#include <sstream>
 #include <cstdint>
 #include <memory>
 #include <string>
 #include <vector>
+#include <fstream>
 
 #include "Bitmap.h"
-#include "Mandelbrot.h"
 #include "Julia.h"
+#include "Mandelbrot.h"
 #include "RGB.h"
 #include "ZoomList.h"
 using namespace std;
@@ -38,7 +39,7 @@ class FractalCreator {
 
    private:
     void calculateIterationsMandelbrot();  // How many iterations each
-                                 // pixel need.
+                                           // pixel need.
     void calculateIterationsJulia();
     void calculateTotalIterations();
     void calculateRangeTotals();
@@ -47,14 +48,18 @@ class FractalCreator {
     int getRange(int iterations) const;
 
    public:
+    int getType();
     FractalCreator(int width, int height, int type);
     FractalCreator(int width, int height, int type, pair<double, double> startingC);
     virtual ~FractalCreator();
-    void addRange(double rangeEnd, const RGB& rgb);
-    void addZoom(const Zoom& zoom);
+    void addRange(double rangeEnd, const RGB &rgb);
+    void addZoom(const Zoom &zoom);
     void run(string name);
+    void colorRangeFile(FractalCreator *fractalCreator1, string filename);
+    void zoomAndPrint(FractalCreator *fractalCreator1, string filename);
 };
 
+FractalCreator *fractalTypeInterpreter(string filename);
 }  // namespace fractal
 
 #endif /* FRACTALCREATOR_H_ */

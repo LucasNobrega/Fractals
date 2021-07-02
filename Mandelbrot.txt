@@ -1,0 +1,6 @@
+1 800 600
+p Mandelbrot_1
+z 301 173 0.1
+p Mandelbrot_2
+z 562 381 0.1
+p Mandelbrot_3
