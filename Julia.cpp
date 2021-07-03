@@ -19,9 +19,8 @@ int Julia::getIterations(double x, double y, double cReal, double cImag) {
 
     int iterations = 0;
 
-    //
     while (iterations < MAX_ITERATIONS) {
-        double xtemp = z.real() * z.real() - z.imag()*z.imag();
+        double xtemp = z.real() * z.real() - z.imag() * z.imag();
         z = complex<double>(xtemp + c.real(), 2 * z.real() * z.imag() + c.imag());
 
         if (abs(z) > 2) {

@@ -20,17 +20,18 @@ void FractalCreator::addRange(double rangeEnd, const RGB& rgb) {
 }
 
 void FractalCreator::run(string name) {
-    // Calculate # iterations for each pixel.
+    // Calculates # iterations for each pixel.
     if (_type == 1) {
         calculateIterationsMandelbrot();
     } else {
         calculateIterationsJulia();
     }
 
-    // Calculate total iterations used
+    // Calculates total iterations used for drawing the whole bitmap. Sums the iterations of all pixels.
+    // It is used for the coloring.
     calculateTotalIterations();
 
-    // Calculate color range
+    // Calculates how many pixels are in each color range.
     calculateRangeTotals();
 
     // Draw colored pixel on Bitmap
@@ -108,10 +109,11 @@ void FractalCreator::drawFractal() {
     RGB endColor(0, 0, 255);
     RGB colorDiff = endColor - startColor;
 
-    // For each pixel:
     for (size_t y = 0; y < _height; y++) {
         for (size_t x = 0; x < _width; x++) {
-            int iterations = _fractal[y * _width + x];
+            // For each pixel:
+
+            int iterations = _fractal[y * _width + x];  // Number of iterations for given pixel
 
             int range = getRange(iterations);
             int rangeTotal = _rangeTotals[range];
@@ -144,29 +146,33 @@ void FractalCreator::drawFractal() {
     }
 }
 
+// Total of iterations for drawing the whole bitmap
 void FractalCreator::calculateTotalIterations() {
     for (size_t i = 0; i < Mandelbrot::MAX_ITERATIONS; i++) {
         _total += _histogram[i];
     }
 }
 
+// Calculates how many pixels are in that color range.
 void FractalCreator::calculateRangeTotals() {
     int rangeIndex = 0;
 
     for (int i = 0; i < Mandelbrot::MAX_ITERATIONS; i++) {
-        int pixels = _histogram[i];
+        int pixels = _histogram[i];     // How many pixels need that # of iterations.
+
 
         if (i >= _ranges[rangeIndex + 1]) {
             rangeIndex++;
         }
 
-        _rangeTotals[rangeIndex] += pixels;
+        _rangeTotals[rangeIndex] += pixels; 
     }
 }
 
 // Write in the Bitmap file.
 void FractalCreator::writeBitmap(string name) { _bitmap.write(name); }
 
+//
 int FractalCreator::getRange(int iterations) const {
     int range = 0;
 
@@ -188,7 +194,7 @@ FractalCreator::~FractalCreator(){};
 
 int FractalCreator::getType() { return _type; }
 
-void FractalCreator::colorRangeFile(FractalCreator *fractalCreator1, string filename) {
+void FractalCreator::colorRangeFile(FractalCreator* fractalCreator1, string filename) {
     // Open file
     fstream colorFile;
     colorFile.open(filename, ios::in);
@@ -221,7 +227,7 @@ void FractalCreator::colorRangeFile(FractalCreator *fractalCreator1, string file
     colorFile.close();
 }
 
-void FractalCreator::zoomAndPrint(FractalCreator *fractalCreator1, string filename) {
+void FractalCreator::zoomAndPrint(FractalCreator* fractalCreator1, string filename) {
     // Open file
     fstream fractalFile;
     fractalFile.open(filename, ios::in);
@@ -230,7 +236,7 @@ void FractalCreator::zoomAndPrint(FractalCreator *fractalCreator1, string filena
     if (!fractalFile.is_open()) {
         cout << "Could not open fractal file." << endl;
     }
-    
+
     string line = "";
     string operation = "";
 
@@ -241,7 +247,6 @@ void FractalCreator::zoomAndPrint(FractalCreator *fractalCreator1, string filena
         getline(fractalFile, line);
         getline(fractalFile, line);
     }
-
 
     while (getline(fractalFile, line)) {
         stringstream linestream(line);
@@ -258,7 +263,7 @@ void FractalCreator::zoomAndPrint(FractalCreator *fractalCreator1, string filena
             int y = stoi(stringY);
             double scale = stod(stringScale);
 
-            //cout << x << ", " << y << ", " << scale << endl;
+            // cout << x << ", " << y << ", " << scale << endl;
             fractalCreator1->addZoom(Zoom(x, y, scale));
         } else if (operation == "p") {
             string printName = "";
@@ -271,8 +276,7 @@ void FractalCreator::zoomAndPrint(FractalCreator *fractalCreator1, string filena
     fractalFile.close();
 }
 
-
-FractalCreator *fractalTypeInterpreter(string filename) {
+FractalCreator* fractalTypeInterpreter(string filename) {
     // Open file
     fstream fractalFile;
     fractalFile.open(filename, ios::in);
@@ -287,7 +291,7 @@ FractalCreator *fractalTypeInterpreter(string filename) {
     int fractalType = 0;
     int dimX = 0;
     int dimY = 0;
-    FractalCreator *pFractalCreator = nullptr;
+    FractalCreator* pFractalCreator = nullptr;
 
     // Get fractal type and dimensions
     fractalFile >> fractalType >> dimX >> dimY;
@@ -314,6 +318,5 @@ FractalCreator *fractalTypeInterpreter(string filename) {
     // Return pointer to created fractal
     return pFractalCreator;
 }
-
 
 }  // namespace fractal

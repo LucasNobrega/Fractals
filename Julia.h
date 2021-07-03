@@ -14,7 +14,7 @@ class Julia {
     Julia();
     virtual ~Julia();
 
-    // Calculate # of iterations for a given pixel.
+    // Calculates # of iterations for a given pixel.
     static int getIterations(double x, double y, double cReal, double cImag);
 };
 
